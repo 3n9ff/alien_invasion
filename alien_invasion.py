@@ -24,28 +24,38 @@ class AlienInvasion:
         #call the ship
         self.ship = Ship(self)
         
+    def _check_events(self):
+        """ Respond to keypress and mouse events"""
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()             
+        
+    def _update_screen(self):
+        """ Update the screen all the time"""
+
+        #Display background color
+        self.screen.fill(self.bg_colors)
+
+        #Draw the ship
+        self.ship.blitime()
+
+        #Make the most recently draw screen visible
+        pygame.display.flip()
+
     def run_game(self):
         """start the main loop for the game"""
         while True:
-            #watch for a keyboard and mous events"""
 
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    sys.exit()
+            #respond to events
+            self._check_events()
 
-            #Display background color
-            self.screen.fill(self.bg_colors)
+            #Update the grafics
+            self._update_screen()
+        
 
-            #Draw the ship
-            self.ship.blitime()
-
-        #Make the most recently draw screen visible
-            pygame.display.flip()
 if __name__ == '__main__':
 
     #make a game instance and run the game
     ai = AlienInvasion()
     ai.run_game()
-    
-            
-        
