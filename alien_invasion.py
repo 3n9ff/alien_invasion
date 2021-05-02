@@ -15,6 +15,7 @@ class AlienInvasion:
 
         self.settings = Settings()
 
+        #Crear ventama
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         pygame.display.set_caption("alien Invasion")
 
@@ -29,8 +30,38 @@ class AlienInvasion:
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                sys.exit()             
-        
+                sys.exit()     
+
+            #comprueva si se presiona una tecla
+            elif event.type == pygame.KEYDOWN:
+
+                if event.key == pygame.K_RIGHT:
+                    self.ship.movment_right = True
+                
+                elif event.key == pygame.K_LEFT:
+                    self.ship.movment_left = True
+
+                elif event.key == pygame.K_UP:
+                    self.ship.movement_up = True
+
+                elif event.key == pygame.K_DOWN:
+                    self.ship.movement_down = True
+                
+
+            elif event.type == pygame.KEYUP:
+
+                if event.key == pygame.K_RIGHT:
+                    self.ship.movment_right = False
+
+                elif event.key == pygame.K_LEFT:
+                    self.ship.movment_left = False 
+
+                elif event.key == pygame.K_UP:
+                    self.ship.movement_up = False
+
+                elif event.key == pygame.K_DOWN:
+                    self.ship.movement_down = False  
+
     def _update_screen(self):
         """ Update the screen all the time"""
 
@@ -52,6 +83,9 @@ class AlienInvasion:
 
             #Update the grafics
             self._update_screen()
+
+            #Update ship position
+            self.ship.upadate_movement()
         
 
 if __name__ == '__main__':
