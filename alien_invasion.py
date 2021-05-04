@@ -38,13 +38,13 @@ class AlienInvasion:
                 if event.key == pygame.K_RIGHT:
                     self.ship.movment_right = True
                 
-                elif event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT:
                     self.ship.movment_left = True
 
-                elif event.key == pygame.K_UP:
+                if event.key == pygame.K_UP:
                     self.ship.movement_up = True
 
-                elif event.key == pygame.K_DOWN:
+                if event.key == pygame.K_DOWN:
                     self.ship.movement_down = True
                 
 
@@ -53,13 +53,13 @@ class AlienInvasion:
                 if event.key == pygame.K_RIGHT:
                     self.ship.movment_right = False
 
-                elif event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT:
                     self.ship.movment_left = False 
 
-                elif event.key == pygame.K_UP:
+                if event.key == pygame.K_UP:
                     self.ship.movement_up = False
 
-                elif event.key == pygame.K_DOWN:
+                if event.key == pygame.K_DOWN:
                     self.ship.movement_down = False  
 
     def _update_screen(self):

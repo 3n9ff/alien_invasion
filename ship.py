@@ -1,5 +1,7 @@
 import pygame
 
+from settings import Settings
+
 class Ship:
     """Define ship behavior"""
 
@@ -24,20 +26,32 @@ class Ship:
         self.movement_up = False
 
         self.movement_down = False
+
+        #Call settings
+        self.setting = Settings()
+
+        #Allow handel floats
+        self.x = float(self.rect.x)
+        self.y = float(self.rect.y) 
      
     def upadate_movement(self):
         """Update ship position besed on the flags"""
         if self.movment_right:
-            self.rect.x += 1
+            self.x += self.setting.ship_speed_x
 
-        elif self.movment_left:
-            self.rect.x -= 1
+        if self.movment_left:
+            self.x -= self.setting.ship_speed_x
         
-        elif self.movement_up:
-            self.rect.y -= 1
+        if self.movement_up:
+            self.y -= self.setting.ship_speed_y
 
-        elif self.movement_down:
-            self.rect.y += 1
+        if self.movement_down:
+            self.y += self.setting.ship_speed_y
+
+        #return the original variable name
+        self.rect.x = self.x
+        self.rect.y = self.y
+
 
     def blitime(self):
         """Draw the ship as its curretn location"""
