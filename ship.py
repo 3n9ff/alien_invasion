@@ -8,8 +8,6 @@ class Ship:
     def __init__(self, ai_game):
 
         #call main data
-        self.screen_width = ai_game.screen_width
-        self.screen_height = ai_game.screen_height
         self.screen = ai_game.screen
         self.screen_rect = ai_game.screen.get_rect()
 
