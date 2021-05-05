@@ -7,10 +7,13 @@ class Ship:
 
     def __init__(self, ai_game):
 
+        #call main data
+        self.screen_width = ai_game.screen_width
+        self.screen_height = ai_game.screen_height
         self.screen = ai_game.screen
         self.screen_rect = ai_game.screen.get_rect()
 
-    #Load the ship image and get its rect
+        #Load the ship image and get its rect
         image = pygame.image.load('imagenes/nave.png')
         self.image = pygame.transform.scale(image, (80, 68))
         self.rect = self.image.get_rect()
@@ -36,16 +39,16 @@ class Ship:
      
     def upadate_movement(self):
         """Update ship position besed on the flags"""
-        if self.movment_right:
+        if (self.movment_right) and (self.x < 1300):
             self.x += self.setting.ship_speed_x
 
-        if self.movment_left:
+        if (self.movment_left) and (self.x > 0):
             self.x -= self.setting.ship_speed_x
         
-        if self.movement_up:
+        if (self.movement_up) and (self.y > 0):
             self.y -= self.setting.ship_speed_y
 
-        if self.movement_down:
+        if (self.movement_down) and (self.y < 730):
             self.y += self.setting.ship_speed_y
 
         #return the original variable name

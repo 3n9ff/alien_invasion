@@ -16,8 +16,14 @@ class AlienInvasion:
         self.settings = Settings()
 
         #Crear ventama
-        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
+        self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
         pygame.display.set_caption("alien Invasion")
+
+        self.screen_rect = self.screen.get_rect()
+
+        #wifth and height
+        self.screen_width = self.screen_rect.width
+        self.screen_height = self.screen_rect.height
 
         #indicar los colores
         self.bg_colors = (self.settings.bg_colors)
@@ -34,33 +40,45 @@ class AlienInvasion:
 
             #comprueva si se presiona una tecla
             elif event.type == pygame.KEYDOWN:
-
-                if event.key == pygame.K_RIGHT:
-                    self.ship.movment_right = True
                 
-                if event.key == pygame.K_LEFT:
-                    self.ship.movment_left = True
-
-                if event.key == pygame.K_UP:
-                    self.ship.movement_up = True
-
-                if event.key == pygame.K_DOWN:
-                    self.ship.movement_down = True
-                
+                self._check_keydown(event)
 
             elif event.type == pygame.KEYUP:
 
-                if event.key == pygame.K_RIGHT:
-                    self.ship.movment_right = False
+                self._check_keyup(event)
 
-                if event.key == pygame.K_LEFT:
-                    self.ship.movment_left = False 
+    def _check_keydown(self, event):
+        """Check for keydown events"""
 
-                if event.key == pygame.K_UP:
-                    self.ship.movement_up = False
+        if event.key == pygame.K_q:
+            sys.exit()
 
-                if event.key == pygame.K_DOWN:
-                    self.ship.movement_down = False  
+        if event.key == pygame.K_RIGHT:
+            self.ship.movment_right = True
+                
+        if event.key == pygame.K_LEFT:
+            self.ship.movment_left = True
+
+        if event.key == pygame.K_UP:
+            self.ship.movement_up = True
+
+        if event.key == pygame.K_DOWN:
+            self.ship.movement_down = True
+                
+    def _check_keyup(self, event):
+        """Check for keydown events"""
+
+        if event.key == pygame.K_RIGHT:
+            self.ship.movment_right = False
+
+        if event.key == pygame.K_LEFT:
+            self.ship.movment_left = False 
+
+        if event.key == pygame.K_UP:
+            self.ship.movement_up = False
+
+        if event.key == pygame.K_DOWN:
+            self.ship.movement_down = False
 
     def _update_screen(self):
         """ Update the screen all the time"""
@@ -81,11 +99,13 @@ class AlienInvasion:
             #respond to events
             self._check_events()
 
+            #Update ship position
+            self.ship.upadate_movement()
+
             #Update the grafics
             self._update_screen()
 
-            #Update ship position
-            self.ship.upadate_movement()
+
         
 
 if __name__ == '__main__':
