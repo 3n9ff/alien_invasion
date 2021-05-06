@@ -20,11 +20,17 @@ class Bullet(Sprite):
         self.rect.midtop = self.ship.rect.midtop
 
         #Allows work with decimal values
-        self.y = self.rect.y
+        self.y = float(self.rect.y)
 
-    def update_bullet(self):
+    def update(self):
         """Update bullet position"""
+
+        #Move values
         self.y -= self.settings.bullet_speed
+
+        #Set value to the right variable
+        self.rect.y = self.y
+
 
     def draw_bullet(self):
         """Draw the bullet onto the screen"""
