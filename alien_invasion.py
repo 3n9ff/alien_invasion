@@ -6,6 +6,8 @@ from settings import Settings
 
 from ship import Ship
 
+from bullet import Bullet
+
 class AlienInvasion:
     """Overall vlass to manage assets an behavior"""
 
@@ -28,8 +30,10 @@ class AlienInvasion:
         #indicar los colores
         self.bg_colors = (self.settings.bg_colors)
 
-        #call the ship
-        self.ship = Ship(self)
+        #Call characters class
+        self.ship = Ship(self)        
+        self.bullet = Bullet(self)
+
         
     def _check_events(self):
         """ Respond to keypress and mouse events"""
@@ -89,6 +93,9 @@ class AlienInvasion:
         #Draw the ship
         self.ship.blitime()
 
+        #Update ship position
+        self.ship.upadate_movement()
+
         #Make the most recently draw screen visible
         pygame.display.flip()
 
@@ -99,14 +106,9 @@ class AlienInvasion:
             #respond to events
             self._check_events()
 
-            #Update ship position
-            self.ship.upadate_movement()
-
             #Update the grafics
             self._update_screen()
 
-
-        
 
 if __name__ == '__main__':
 
