@@ -7,5 +7,11 @@ class Settings:
         self.bg_colors = (25, 25, 112 )
 
         #ship settings
-        self.ship_speed_x = 2.5
-        self.ship_speed_y = 1.35
+        self.ship_speed_x = 1.5
+        self.ship_speed_y = 0.9
+
+        #Bullet settings
+        self.bullet_width = 2
+        self.bullet_height = 5
+        self.bullet_speed = 2.3
+        self.bullet_color = (192, 192, 192)
