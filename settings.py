@@ -7,5 +7,5 @@ class Settings:
         self.bg_colors = (25, 25, 112 )
 
         #ship settings
-        self.ship_speed_x = 1.5
-        self.ship_speed_y = 0.9125
+        self.ship_speed_x = 2.5
+        self.ship_speed_y = 1.35
