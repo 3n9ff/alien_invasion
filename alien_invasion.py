@@ -8,6 +8,8 @@ from ship import Ship
 
 from bullet import Bullet
 
+from aliens import Alien
+
 class AlienInvasion:
     """Overall vlass to manage assets an behavior"""
 
@@ -35,6 +37,11 @@ class AlienInvasion:
 
         #Make a group that manage all bullets
         self.bullets = pygame.sprite.Group()
+
+        #Make a group that manage all aliens
+        self.aliens = pygame.sprite.Group()
+
+        self._create_fleet()
         
     def _check_events(self):
         """ Respond to keypress and mouse events"""
@@ -87,16 +94,34 @@ class AlienInvasion:
 
         if event.key == pygame.K_DOWN:
             self.ship.movement_down = False
+        
+    def _create_fleet(self):
+        """Create a fleet of aliens"""
+        new_alien = Alien(self)
+        self.aliens.add(new_alien)
 
     def _fire_bullet(self):
         """shot the bullets"""
 
-        #Make a new bullet
-        new_bullet = Bullet(self)
+        if len(self.bullets) < 3:
 
-        #Add the bullets to the group
-        self.bullets.add(new_bullet)
+            #Make a new bullet
+            new_bullet = Bullet(self)
+
+            #Add the bullets to the group
+            self.bullets.add(new_bullet)
         
+        else:
+            pass
+
+    def _update_bullet(self):
+        """Update bullets position and deleat the from the sprites list"""
+
+        self.bullets.update()
+        for bullet in self.bullets:
+            #Eliminar las balas si salen de la pantalla
+            if bullet.rect.y == 0:
+                self.bullets.remove(bullet)
 
     def _update_screen(self):
         """ Update the screen all the time"""
@@ -110,13 +135,16 @@ class AlienInvasion:
         #Draw the bullets
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
+        
+        #Draw the aliens
+        self.aliens.draw(self.screen)
 
         #Make the most recently draw screen visible
         pygame.display.flip()
 
     def run_game(self):
         """start the main loop for the game"""
-        while True:
+        while True:   
 
             #respond to events
             self._check_events()
@@ -125,10 +153,11 @@ class AlienInvasion:
             self.ship.upadate_movement()
 
             #Update bullets position
-            self.bullets.update()
-    
+            self._update_bullet()
+
             #Update the grafics
             self._update_screen()
+
 
 
 if __name__ == '__main__':

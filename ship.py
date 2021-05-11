@@ -57,4 +57,3 @@ class Ship:
     def blitime(self):
         """Draw the ship as its curretn location"""
         self.screen.blit(self.image, self.rect)
-
