@@ -11,8 +11,8 @@ class Alien(Sprite):
         self.screen = main_game.screen
 
         #Alien info
-        image = pygame.image.load('imagenes/nave.png')
-        self.image = pygame.transform.scale(self.screen, (100, 100))
+        image = pygame.image.load('imagenes/alien.png')
+        self.image = pygame.transform.scale(image, (100, 65))
         self.rect = self.image.get_rect()
 
         #Initial position

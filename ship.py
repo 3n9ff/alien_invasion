@@ -13,7 +13,7 @@ class Ship:
 
         #Load the ship image and get its rect
         image = pygame.image.load('imagenes/nave.png')
-        self.image = pygame.transform.scale(image, (80, 68))
+        self.image = pygame.transform.scale(image, (96, 81))
         self.rect = self.image.get_rect()
 
         #start all the ships at the bottom center
