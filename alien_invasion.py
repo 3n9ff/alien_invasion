@@ -97,8 +97,17 @@ class AlienInvasion:
         
     def _create_fleet(self):
         """Create a fleet of aliens"""
-        new_alien = Alien(self)
-        self.aliens.add(new_alien)
+        alien = Alien(self)
+        alien_width = alien.rect.width
+        number_aliens_x = self.screen_width // alien_width 
+        print(number_aliens_x)
+
+        for alien_number in range(number_aliens_x):
+            alien = Alien(self)
+            alien.x = alien_width // 2 +  alien_width * alien_number * 1.5
+            alien.rect.x = alien.x
+            self.aliens.add(alien)
+        
 
     def _fire_bullet(self):
         """shot the bullets"""
