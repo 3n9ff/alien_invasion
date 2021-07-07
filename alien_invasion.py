@@ -68,31 +68,31 @@ class AlienInvasion:
         if event.key == pygame.K_SPACE:
             self._fire_bullet()
 
-        if event.key == pygame.K_RIGHT:
+        if event.key == pygame.K_d:
             self.ship.movment_right = True
                 
-        if event.key == pygame.K_LEFT:
+        if event.key == pygame.K_a:
             self.ship.movment_left = True
 
-        if event.key == pygame.K_UP:
+        if event.key == pygame.K_w:
             self.ship.movement_up = True
 
-        if event.key == pygame.K_DOWN:
+        if event.key == pygame.K_s:
             self.ship.movement_down = True
                 
     def _check_keyup(self, event):
         """Check for keydown events"""
 
-        if event.key == pygame.K_RIGHT:
+        if event.key == pygame.K_d:
             self.ship.movment_right = False
 
-        if event.key == pygame.K_LEFT:
+        if event.key == pygame.K_a:
             self.ship.movment_left = False 
 
-        if event.key == pygame.K_UP:
+        if event.key == pygame.K_w:
             self.ship.movement_up = False
 
-        if event.key == pygame.K_DOWN:
+        if event.key == pygame.K_s:
             self.ship.movement_down = False
         
     def _create_fleet(self):
@@ -100,7 +100,7 @@ class AlienInvasion:
         alien = Alien(self)
         alien_width = alien.rect.width
         number_aliens_x = self.screen_width // alien_width 
-        print(number_aliens_x)
+        
 
         for alien_number in range(number_aliens_x):
             alien = Alien(self)

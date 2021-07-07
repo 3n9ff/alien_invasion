@@ -17,7 +17,7 @@ class Alien(Sprite):
 
         #Initial position
         self.rect.x = self.rect.width
-        self.rect.y = self.rect.height
+        self.rect.y = self.rect.height * 0.75
 
         #Store aliens original position
         self.x = float(self.rect.x)
