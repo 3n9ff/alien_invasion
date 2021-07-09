@@ -94,32 +94,38 @@ class AlienInvasion:
 
         if event.key == pygame.K_s:
             self.ship.movement_down = False
+    
+    def _create_alien(self, line, alien_number):
+        """Create an alien"""
+        alien = Alien( self )
+        alien_width, alien_height = alien.rect.size
         
+        #Set y data
+        alien.y = alien_height + 2 * alien_height * line 
+        alien.rect.y = alien.y
+        #set x data
+        alien.x = alien_width // 2 +  alien_width * alien_number * 1.5
+        alien.rect.x = alien.x
+        #add aliens to sprite to be drawn
+        self.aliens.add(alien)
+
     def _create_fleet(self):
         """Create a fleet of aliens"""
         alien = Alien(self)
+        alien_width, alien_height = alien.rect.size
+
         #Calculates the x parameters
-        alien_width = alien.rect.width
         number_aliens_x = self.screen_width // alien_width 
         #Calculates the y parameters
-        alien_height = alien.rect.height
         aviliable_space = self.screen_height - (3 * alien.rect.y)
-        number_lines = aviliable_space // alien_height
+        number_lines = aviliable_space // (alien_height * 2)
 
         for line in range(number_lines):
 
-            alien = Alien(self)
-            alien.y = alien_height + 2 * alien_height * line
-            alien.rect.y = alien.y
-            self.aliens.add(alien)
-
             for alien_number in range(number_aliens_x):
-                
-                alien.x = alien_width // 2 +  alien_width * alien_number * 1.5
-                alien.rect.x = alien.x
-                self.aliens.add(alien)
-            
+                self._create_alien(line, alien_number)
 
+            
     def _fire_bullet(self):
         """shot the bullets"""
 
