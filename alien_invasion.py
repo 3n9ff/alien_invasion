@@ -38,10 +38,23 @@ class AlienInvasion:
         #Make a group that manage all bullets
         self.bullets = pygame.sprite.Group()
 
-        #Make a group that manage all aliens
+        #Make a group that manage all aliens and set them
         self.aliens = pygame.sprite.Group()
-
         self._create_fleet()
+
+    def _alien_movement(self):
+        """Control the movment of the aliens"""
+
+        #Use the fuction to move the aliens        
+        self.aliens.update()
+
+        down = self.settings.alien_down_movement
+        for alien in self.aliens:
+            if alien.rect.x == 0:
+
+                alien.rect.y += down
+                self.settings.alien_speed * (-1)
+
         
     def _check_events(self):
         """ Respond to keypress and mouse events"""
@@ -115,7 +128,7 @@ class AlienInvasion:
         alien_width, alien_height = alien.rect.size
 
         #Calculates the x parameters
-        number_aliens_x = self.screen_width // alien_width 
+        number_aliens_x = 9
         #Calculates the y parameters
         aviliable_space = self.screen_height - (3 * alien.rect.y)
         number_lines = aviliable_space // (alien_height * 2)
@@ -124,7 +137,6 @@ class AlienInvasion:
 
             for alien_number in range(number_aliens_x):
                 self._create_alien(line, alien_number)
-
             
     def _fire_bullet(self):
         """shot the bullets"""
@@ -180,6 +192,9 @@ class AlienInvasion:
 
             #Update bullets position
             self._update_bullet()
+
+            #Update aliens position
+            self._alien_movement()
 
             #Update the grafics
             self._update_screen()
