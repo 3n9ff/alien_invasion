@@ -37,14 +37,13 @@ class Alien(Sprite):
 
         self.rect.x = self.x
 
-        #control the y movemen
-        if self.settings.alien_down:
-            
-            self.y += self.settings.alien_movement_down
+    def check_edges(self):
+        """check if some alien reach an edge"""
 
-            self.rect.y = self.y
+        if self.rect.x  == 1270 or self.rect.x == 0:
+            return True
+
             
-            self.settings.alien_down = False
 
             
             

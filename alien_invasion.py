@@ -1,7 +1,7 @@
 import sys
 
 import pygame
-from pygame.constants import RESIZABLE
+from pygame.constants import FULLSCREEN, RESIZABLE
 
 from settings import Settings 
 
@@ -21,7 +21,7 @@ class AlienInvasion:
         self.settings = Settings()
 
         #Crear ventama
-        self.screen = pygame.display.set_mode((1100,700), RESIZABLE)
+        self.screen = pygame.display.set_mode((0,0), FULLSCREEN)
         pygame.display.set_caption("alien Invasion")
 
         self.screen_rect = self.screen.get_rect()
@@ -73,12 +73,6 @@ class AlienInvasion:
                 
         if event.key == pygame.K_a:
             self.ship.movment_left = True
-
-        if event.key == pygame.K_w:
-            self.ship.movement_up = True
-
-        if event.key == pygame.K_s:
-            self.ship.movement_down = True
                 
     def _check_keyup(self, event):
         """Check for keydown events"""
@@ -88,12 +82,6 @@ class AlienInvasion:
 
         if event.key == pygame.K_a:
             self.ship.movment_left = False 
-
-        if event.key == pygame.K_w:
-            self.ship.movement_up = False
-
-        if event.key == pygame.K_s:
-            self.ship.movement_down = False
     
     def _create_alien(self, line, alien_number):
         """Create an alien"""
@@ -117,8 +105,7 @@ class AlienInvasion:
         #Calculates the x parameters
         number_aliens_x = 9
         #Calculates the y parameters
-        aviliable_space = self.screen_height - (3 * alien.rect.y)
-        number_lines = aviliable_space // (alien_height * 2)
+        number_lines = 3
 
         for line in range(number_lines):
 
@@ -131,39 +118,37 @@ class AlienInvasion:
         #Use the fuction to move the aliens        
         self.aliens.update()
 
-        #Cgange the direction and move down the aliens when touch 
-        #the edge of the screen
-        self._change_alien_direction()
+        #Check the position to move properly the fleet
+        self._check_fleet_direction()
 
-    def _change_alien_direction(self):
-        """Change the alien direction and go dawn the alien"""
+    def _check_fleet_direction(self):
+        """Check if any alien has reached the edge"""
+        for alien in self.aliens:
+            if alien.check_edges():
+                self._change_direction()
+                
+                break
+
+    def _change_direction(self):
+        """Change the direction of the fleet and """
+
+        self.settings.alien_direction *= -1
 
         for alien in self.aliens:
+            alien.rect.y += self.settings.alien_drop_down
 
-            if alien.rect.x == 0:
-
-                self.settings.alien_down = True
-                self.settings.alien_direction = -1
-            
-            if alien.rect.x == 1270:
-
-                self.settings.alien_down = True
-                self.settings.alien_direction = 1
-                
                 
     def _fire_bullet(self):
         """shot the bullets"""
 
-        if len(self.bullets) < 3:
+        if len(self.bullets) < self.settings.bullet_loader:
 
             #Make a new bullet
             new_bullet = Bullet(self)
 
             #Add the bullets to the group
             self.bullets.add(new_bullet)
-        
-        else:
-            pass
+
 
     def _update_bullet(self):
         """Update bullets position and deleat the from the sprites list"""
