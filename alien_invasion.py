@@ -2,6 +2,7 @@ import sys
 
 import pygame
 from pygame.constants import FULLSCREEN, RESIZABLE
+from pygame.sprite import collide_circle
 
 from settings import Settings 
 
@@ -159,6 +160,9 @@ class AlienInvasion:
             if bullet.rect.y == 0:
                 self.bullets.remove(bullet)
 
+        collider = pygame.sprite.groupcollide(self.aliens, self.bullets, True, True)
+                   
+
     def _update_screen(self):
         """ Update the screen all the time"""
 
@@ -196,7 +200,6 @@ class AlienInvasion:
 
             #Update the grafics
             self._update_screen()
-
 
 
 if __name__ == '__main__':
