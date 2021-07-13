@@ -1,6 +1,7 @@
 import sys
 
 import pygame
+from pygame.constants import RESIZABLE
 
 from settings import Settings 
 
@@ -20,7 +21,7 @@ class AlienInvasion:
         self.settings = Settings()
 
         #Crear ventama
-        self.screen = pygame.display.set_mode((0,0), pygame.FULLSCREEN)
+        self.screen = pygame.display.set_mode((1100,700), RESIZABLE)
         pygame.display.set_caption("alien Invasion")
 
         self.screen_rect = self.screen.get_rect()
@@ -41,21 +42,7 @@ class AlienInvasion:
         #Make a group that manage all aliens and set them
         self.aliens = pygame.sprite.Group()
         self._create_fleet()
-
-    def _alien_movement(self):
-        """Control the movment of the aliens"""
-
-        #Use the fuction to move the aliens        
-        self.aliens.update()
-
-        down = self.settings.alien_down_movement
-        for alien in self.aliens:
-            if alien.rect.x == 0:
-
-                alien.rect.y += down
-                self.settings.alien_speed * (-1)
-
-        
+            
     def _check_events(self):
         """ Respond to keypress and mouse events"""
 
@@ -137,7 +124,33 @@ class AlienInvasion:
 
             for alien_number in range(number_aliens_x):
                 self._create_alien(line, alien_number)
+
+    def _alien_movement(self):
+        """Control the movment of the aliens"""
+
+        #Use the fuction to move the aliens        
+        self.aliens.update()
+
+        #Cgange the direction and move down the aliens when touch 
+        #the edge of the screen
+        self._change_alien_direction()
+
+    def _change_alien_direction(self):
+        """Change the alien direction and go dawn the alien"""
+
+        for alien in self.aliens:
+
+            if alien.rect.x == 0:
+
+                self.settings.alien_down = True
+                self.settings.alien_direction = -1
             
+            if alien.rect.x == 1270:
+
+                self.settings.alien_down = True
+                self.settings.alien_direction = 1
+                
+                
     def _fire_bullet(self):
         """shot the bullets"""
 

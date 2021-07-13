@@ -1,6 +1,7 @@
 import pygame
 
 from pygame.sprite import Sprite
+from pygame.transform import chop
 
 from settings import Settings
 
@@ -11,7 +12,9 @@ class Alien(Sprite):
 
         super().__init__()
         self.screen = main_game.screen
+        self.aliens = main_game.aliens
         self.settings = main_game.settings
+        
 
         #Alien info
         image = pygame.image.load('imagenes/alien.png')
@@ -27,16 +30,21 @@ class Alien(Sprite):
         self.y = float(self.rect.y)
 
     def update(self):
-        """Manage the movemetn of the ovnis"""
+        """Manage the movement of the ovnis"""
 
-        self.x -= self.settings.alien_speed
+        #Control the x movement
+        self.x -= (self.settings.alien_speed * self.settings.alien_direction)
 
         self.rect.x = self.x
 
-        
+        #control the y movemen
+        if self.settings.alien_down:
+            
+            self.y += self.settings.alien_movement_down
 
+            self.rect.y = self.y
+            
+            self.settings.alien_down = False
 
-
-
-
-
+            
+            

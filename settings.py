@@ -18,4 +18,6 @@ class Settings:
 
         #Alien speed
         self.alien_speed = 0.5
-        self.alien_down_movement = 2
+        self.alien_down = False
+        self.alien_movement_down = 5
+        self.alien_direction = -1
