@@ -129,7 +129,6 @@ class AlienInvasion:
         #Check the position to move properly the fleet
         self._check_fleet_direction()
 
-        self._check_ship_alien_colliders()
 
     def _check_ship_alien_colliders(self):
         """ Check ship-alien collisions"""
@@ -140,8 +139,18 @@ class AlienInvasion:
 
             self._ship_hit()
     
+    def _check_alien_reach_bottom(self):
+        """Check if an alien reach the bottom"""
+
+        for alien in self.aliens:
+            if alien.rect.bottom >= self.screen_rect.bottom:
+
+                self._ship_hit()
+
+                break
+
     def _ship_hit(self):
-        """says what happend when the ship collide"""
+        """says what happend when the ship collide or a alien reach the bottom"""
 
         #substract a live
         self.statistics.ship_lives_left -= 1
@@ -246,6 +255,10 @@ class AlienInvasion:
 
             #Update aliens position
             self._alien_movement()
+
+            #Colliders
+            self._check_ship_alien_colliders()
+            self._check_alien_reach_bottom()
 
             #Update the grafics
             self._update_screen()
