@@ -1,8 +1,10 @@
 import sys
 
 import pygame
-from pygame.constants import FULLSCREEN, RESIZABLE
-from pygame.sprite import collide_circle
+
+import time
+
+from pygame.constants import FULLSCREEN
 
 from settings import Settings 
 
@@ -11,6 +13,8 @@ from ship import Ship
 from bullet import Bullet
 
 from aliens import Alien
+
+from game_stats import Gamestats
 
 class AlienInvasion:
     """Overall vlass to manage assets an behavior"""
@@ -33,6 +37,9 @@ class AlienInvasion:
 
         #indicar los colores
         self.bg_colors = (self.settings.bg_colors)
+
+        #set the statistics of the game
+        self.statistics = Gamestats(self.settings)
 
         #Call characters class
         self.ship = Ship(self)        
@@ -122,6 +129,33 @@ class AlienInvasion:
         #Check the position to move properly the fleet
         self._check_fleet_direction()
 
+        self._check_ship_alien_colliders()
+
+    def _check_ship_alien_colliders(self):
+        """ Check ship-alien collisions"""
+
+        ship_alien_colider = pygame.sprite.spritecollideany(self.ship, self.aliens)
+
+        if ship_alien_colider:
+
+            self._ship_hit()
+    
+    def _ship_hit(self):
+        """says what happend when the ship collide"""
+
+        #substract a live
+        self.statistics.ship_lives_left -= 1
+
+        #empty the screen
+        self.aliens.empty()
+        self.bullets.empty()
+
+        #move the alien to the center
+        self.ship.x = self.screen_rect.centerx
+
+        #pause time
+        time.sleep(0.5)
+
     def _check_fleet_direction(self):
         """Check if any alien has reached the edge"""
         for alien in self.aliens:
@@ -159,9 +193,24 @@ class AlienInvasion:
             #Eliminar las balas si salen de la pantalla
             if bullet.rect.y == 0:
                 self.bullets.remove(bullet)
+        self._check_alien_bullet_col()
+    
+    def _check_alien_bullet_col(self):
 
         collider = pygame.sprite.groupcollide(self.aliens, self.bullets, True, True)
-                   
+
+        self._create_new_feet()
+
+    def _create_new_feet(self):
+
+        #Check if all the fleet has been shoted down
+        if len(self.aliens) == 0:
+
+            #Delete all bullets on the screen
+            self.bullets.empty()
+
+            #Create another fleet
+            self._create_fleet()
 
     def _update_screen(self):
         """ Update the screen all the time"""
@@ -200,7 +249,6 @@ class AlienInvasion:
 
             #Update the grafics
             self._update_screen()
-
 
 if __name__ == '__main__':
 

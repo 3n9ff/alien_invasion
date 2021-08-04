@@ -9,6 +9,7 @@ class Settings:
         #ship settings
         self.ship_speed_x = 1.5
         self.ship_speed_y = 0.9
+        self.ship_lives = 3
 
         #Bullet settings
         self.bullet_width = 3
