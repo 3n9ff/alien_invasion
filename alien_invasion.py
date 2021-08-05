@@ -50,6 +50,9 @@ class AlienInvasion:
         #Make a group that manage all aliens and set them
         self.aliens = pygame.sprite.Group()
         self._create_fleet()
+
+        #Loop flag
+        self.active = True
             
     def _check_events(self):
         """ Respond to keypress and mouse events"""
@@ -129,6 +132,20 @@ class AlienInvasion:
         #Check the position to move properly the fleet
         self._check_fleet_direction()
 
+    def _check_alien_bullet_col(self):
+
+        collider = pygame.sprite.groupcollide(self.aliens, self.bullets, True, True)
+
+        if collider:
+
+            self._alien_shoted_down()
+
+    def _alien_shoted_down(self):
+        """What happend when an alien is shoted down"""
+
+        self._create_new_feet()
+
+        self.statistics.player_points += 5
 
     def _check_ship_alien_colliders(self):
         """ Check ship-alien collisions"""
@@ -162,8 +179,16 @@ class AlienInvasion:
         #move the alien to the center
         self.ship.x = self.screen_rect.centerx
 
+        #Create a new seep
+        self._create_fleet()
+
         #pause time
         time.sleep(0.5)
+
+        #End game
+        if self.statistics.ship_lives_left == 0:
+
+            self.active = False
 
     def _check_fleet_direction(self):
         """Check if any alien has reached the edge"""
@@ -180,8 +205,7 @@ class AlienInvasion:
 
         for alien in self.aliens:
             alien.rect.y += self.settings.alien_drop_down
-
-                
+         
     def _fire_bullet(self):
         """shot the bullets"""
 
@@ -193,7 +217,6 @@ class AlienInvasion:
             #Add the bullets to the group
             self.bullets.add(new_bullet)
 
-
     def _update_bullet(self):
         """Update bullets position and deleat the from the sprites list"""
 
@@ -204,12 +227,6 @@ class AlienInvasion:
                 self.bullets.remove(bullet)
         self._check_alien_bullet_col()
     
-    def _check_alien_bullet_col(self):
-
-        collider = pygame.sprite.groupcollide(self.aliens, self.bullets, True, True)
-
-        self._create_new_feet()
-
     def _create_new_feet(self):
 
         #Check if all the fleet has been shoted down
@@ -242,26 +259,31 @@ class AlienInvasion:
 
     def run_game(self):
         """start the main loop for the game"""
+        
         while True:   
 
             #respond to events
             self._check_events()
 
-            #Update ship position
-            self.ship.upadate_movement()
+            while self.active:
 
-            #Update bullets position
-            self._update_bullet()
+                #Update ship position
+                self.ship.upadate_movement()
 
-            #Update aliens position
-            self._alien_movement()
+                #Update bullets position
+                self._update_bullet()
 
-            #Colliders
-            self._check_ship_alien_colliders()
-            self._check_alien_reach_bottom()
+                #Update aliens position
+                self._alien_movement()
 
-            #Update the grafics
-            self._update_screen()
+                #Colliders
+                self._check_ship_alien_colliders()
+                self._check_alien_reach_bottom()
+
+                #Update the grafics
+                self._update_screen()
+
+                break
 
 if __name__ == '__main__':
 
