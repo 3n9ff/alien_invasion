@@ -10,11 +10,13 @@ from settings import Settings
 
 from ship import Ship
 
-from bullet import Bullet
+from bullet import  Bullet
 
 from aliens import Alien
 
 from game_stats import Gamestats
+
+from buttons import Startbutton
 
 class AlienInvasion:
     """Overall vlass to manage assets an behavior"""
@@ -40,6 +42,9 @@ class AlienInvasion:
 
         #set the statistics of the game
         self.statistics = Gamestats(self.settings)
+
+        #Button classes
+        self.start_button = Startbutton(self)
 
         #Call characters class
         self.ship = Ship(self)        
@@ -256,6 +261,10 @@ class AlienInvasion:
 
         #Make the most recently draw screen visible
         pygame.display.flip()
+        #TAMBIEN CURRA X AKIIII
+        if not self.active:
+            self.start_button.draw_button()
+
 
     def run_game(self):
         """start the main loop for the game"""

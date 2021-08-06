@@ -1,9 +1,7 @@
 import pygame
 
 from pygame.sprite import Sprite
-from pygame.transform import chop
 
-from settings import Settings
 
 class Alien(Sprite):
     """Manage the overall about aliens"""
