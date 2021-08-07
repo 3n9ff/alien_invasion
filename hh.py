@@ -1,23 +1,28 @@
-import pygame, sys
-from pygame.locals import *
+class Button:
+    """Create all the butons"""
+    
+    def __init__(self, ai_game, msg, letter_size = 50):
 
-def main():
-    pygame.init()
+        #windows info
+        self.screen = ai_game.screen
+        self.screen_rect = self.screen.get_rect()
 
-    DISPLAY=pygame.display.set_mode((500,400),0,32)
+        #Text info
+        self.txcolor = (0, 255, 0)
+        self.font = pygame.font.SysFont(None, letter_size)
+        self.txrender = self.font.render( msg, True, self.txcolor, (0,0,0))
 
-    WHITE=(255,255,255)
-    BLUE=(0,0,255)
+        #text rect info
+        self.txrect = self.txrender.get_rect()
+        self.txrect.centerx = self.screen_rect.centerx
+        self.txrect.centery = self.screen_rect.centery
 
-    DISPLAY.fill(WHITE)
+        #Rect info
+        self.reccolor = (0,0,0) 
+        self.rectangulo = pygame.draw.rect(self.screen, self.reccolor, self.txrect, border_radius=10)       
 
-    pygame.draw.rect(DISPLAY,BLUE,(200,150,100,50))
+    def draw_button(self):
+        """Draw the start button"""
 
-    while True:
-        for event in pygame.event.get():
-            if event.type==QUIT:
-                pygame.quit()
-                sys.exit()
-        pygame.display.update()
-
-main()
+        #Display the text
+        self.screen.blit(self.txrender, self.txrect)

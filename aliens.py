@@ -38,7 +38,7 @@ class Alien(Sprite):
     def check_edges(self):
         """check if some alien reach an edge"""
 
-        if self.rect.x  == 1270 or self.rect.x == 0:
+        if self.rect.x  >= 1270 or self.rect.x <= 0:
             return True
 
             

@@ -5,9 +5,11 @@ class Gamestats:
 
         self.settings = settings
         self.ship_lives_left = self.settings.ship_lives
+        self.round = 1
         self.player_points = 0
 
     def reset_stats(self):
         
         self.ship_lives_left = self.settings.ship_lives
         self.player_points = 0
+        self.round = 1

@@ -16,7 +16,7 @@ from aliens import Alien
 
 from game_stats import Gamestats
 
-from buttons import Button
+from buttons import Button, ScoreBoard
 
 class AlienInvasion:
     """Overall vlass to manage assets an behavior"""
@@ -60,7 +60,8 @@ class AlienInvasion:
         #Loop flag
         self.active = False
         self.game_over = False
-            
+        
+
     def _check_events(self):
         """ Respond to keypress and mouse events"""
 
@@ -162,12 +163,22 @@ class AlienInvasion:
 
             self._alien_shoted_down()
 
+            self._rounds_track()
+
     def _alien_shoted_down(self):
         """What happend when an alien is shoted down"""
 
         self._create_new_feet()
 
-        self.statistics.player_points += 5
+        self.statistics.player_points += self.settings.alien_reached
+
+    def _rounds_track(self):
+        """indicate when a round is passed and what happen"""
+
+        if len(self.aliens) == 1:
+
+            self.statistics.round += 1
+            self.statistics.player_points += self.settings.round_passed
 
     def _check_ship_alien_colliders(self):
         """ Check ship-alien collisions"""
@@ -191,33 +202,35 @@ class AlienInvasion:
     def _ship_hit(self):
         """says what happend when the ship collide or a alien reach the bottom"""
 
-        #substract a live
-        self.statistics.ship_lives_left -= 1
+        if len(self.aliens) != 0:
 
-        #empty the screen
-        self.aliens.empty()
-        self.bullets.empty()
+            #substract a live
+            self.statistics.ship_lives_left -= 1
 
-        #move the alien to the center
-        self.ship.x = self.screen_rect.centerx
+            #empty the screen
+            self.aliens.empty()
+            self.bullets.empty()
 
-        #Create a new seep
-        self._create_fleet()
+            #move the alien to the center
+            self.ship.x = self.screen_rect.centerx
 
-        #pause time
-        time.sleep(0.5)
+            #Create a new seep
+            self._create_fleet()
 
-        #End game
-        if self.statistics.ship_lives_left == 0:
+            #pause time
+            time.sleep(0.5)
 
-            #Stop game
-            self.active = False
+            #End game
+            if self.statistics.ship_lives_left == 0:
 
-            #show game over
-            self.game_over = True
+                #Stop game
+                self.active = False
 
-            #Restart the statistics
-            self.statistics.reset_stats()
+                #show game over
+                self.game_over = True
+
+                #Restart the statistics
+                self.statistics.reset_stats()
  
     def _check_fleet_direction(self):
         """Check if any alien has reached the edge"""
@@ -283,14 +296,18 @@ class AlienInvasion:
         #Draw the aliens
         self.aliens.draw(self.screen)
 
+        #Draw the puntuation
+        puntuation = ScoreBoard(self, self.statistics.player_points)
+        puntuation._show_scoreboard((1200,20)) 
+
         #Draw the proper button
         if not self.active and not self.game_over:
 
             #Draw thr start button
-            self.start_button.draw_button()
+            self.start_button.draw_button() 
 
         if not self.active and self.game_over:
-
+    
             #Draw game over button
             self.restar_button.draw_button()
 
@@ -305,7 +322,6 @@ class AlienInvasion:
 
         #Make the most recently draw screen visible
         pygame.display.flip()
-
 
     def run_game(self):
         """start the main loop for the game"""

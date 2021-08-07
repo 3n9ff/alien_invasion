@@ -4,7 +4,6 @@ class Button:
     """Create all the butons"""
     
     def __init__(self, ai_game, msg, letter_size = 50):
-        pygame.init()
 
         #windows info
         self.screen = ai_game.screen
@@ -29,3 +28,31 @@ class Button:
 
         #Display the text
         self.screen.blit(self.txrender, self.txrect)
+
+class ScoreBoard:
+    """Create a scoreboard by inputing the score"""
+
+    def __init__(self, ai_game, stats ):
+
+        #Screen info
+        self.screen = ai_game.screen
+        self.screen_rect = self.screen.get_rect()
+
+        #Text info
+        self.score = str(stats)
+        self.font = pygame.font.SysFont(None, 50)
+        self.text = self.font.render(self.score, True, (0, 0, 0))
+        self.txrect = self.text.get_rect()
+
+        #txrect data
+        self.rect = pygame.Rect(self.txrect)
+        pygame.draw.rect(self.screen, (25, 25, 112), self.rect)
+
+
+
+    def _show_scoreboard(self, position = (0,0)):
+        """Draw the scoreboard onto the screen"""
+
+        self.screen.blit(self.text, position)
+        
+
