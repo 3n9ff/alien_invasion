@@ -16,7 +16,7 @@ from aliens import Alien
 
 from game_stats import Gamestats
 
-from buttons import Startbutton
+from buttons import Button
 
 class AlienInvasion:
     """Overall vlass to manage assets an behavior"""
@@ -29,7 +29,7 @@ class AlienInvasion:
 
         #Crear ventama
         self.screen = pygame.display.set_mode((0,0), FULLSCREEN)
-        pygame.display.set_caption("alien Invasion")
+        pygame.display.set_caption("Alien Invasion")
 
         self.screen_rect = self.screen.get_rect()
 
@@ -43,11 +43,12 @@ class AlienInvasion:
         #set the statistics of the game
         self.statistics = Gamestats(self.settings)
 
-        #Button classes
-        self.start_button = Startbutton(self)
-
         #Call characters class
-        self.ship = Ship(self)        
+        self.ship = Ship(self)       
+
+        #Buttons
+        self.start_button = Button(self, "  PLAY  ", 125) 
+        self.restar_button = Button(self," GAME OVER, CLICK TO RESTAR", 75)
 
         #Make a group that manage all bullets
         self.bullets = pygame.sprite.Group()
@@ -57,7 +58,8 @@ class AlienInvasion:
         self._create_fleet()
 
         #Loop flag
-        self.active = True
+        self.active = False
+        self.game_over = False
             
     def _check_events(self):
         """ Respond to keypress and mouse events"""
@@ -74,6 +76,10 @@ class AlienInvasion:
             elif event.type == pygame.KEYUP:
 
                 self._check_keyup(event)
+            
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                
+                self._check_play_button()
 
     def _check_keydown(self, event):
         """Check for keydown events"""
@@ -99,6 +105,17 @@ class AlienInvasion:
         if event.key == pygame.K_a:
             self.ship.movment_left = False 
     
+    def _check_play_button(self):
+        #get mouse position
+        mouse_pos = pygame.mouse.get_pos()
+
+        #check if the mouse is on the rect and start the game
+        if self.start_button.txrect.collidepoint(mouse_pos) and not self.active:
+
+            self.active = True
+
+            self.game_over = False  
+
     def _create_alien(self, line, alien_number):
         """Create an alien"""
         alien = Alien( self )
@@ -193,8 +210,15 @@ class AlienInvasion:
         #End game
         if self.statistics.ship_lives_left == 0:
 
+            #Stop game
             self.active = False
 
+            #show game over
+            self.game_over = True
+
+            #Restart the statistics
+            self.statistics.reset_stats()
+ 
     def _check_fleet_direction(self):
         """Check if any alien has reached the edge"""
         for alien in self.aliens:
@@ -259,11 +283,28 @@ class AlienInvasion:
         #Draw the aliens
         self.aliens.draw(self.screen)
 
+        #Draw the proper button
+        if not self.active and not self.game_over:
+
+            #Draw thr start button
+            self.start_button.draw_button()
+
+        if not self.active and self.game_over:
+
+            #Draw game over button
+            self.restar_button.draw_button()
+
+        #Set mous visibility
+        if self.active:
+
+            pygame.mouse.set_visible(False)
+        
+        if self.game_over:
+
+            pygame.mouse.set_visible(True)
+
         #Make the most recently draw screen visible
         pygame.display.flip()
-        #TAMBIEN CURRA X AKIIII
-        if not self.active:
-            self.start_button.draw_button()
 
 
     def run_game(self):
@@ -274,7 +315,10 @@ class AlienInvasion:
             #respond to events
             self._check_events()
 
-            while self.active:
+            #Update the grafics
+            self._update_screen()
+
+            if self.active:
 
                 #Update ship position
                 self.ship.upadate_movement()
@@ -289,10 +333,6 @@ class AlienInvasion:
                 self._check_ship_alien_colliders()
                 self._check_alien_reach_bottom()
 
-                #Update the grafics
-                self._update_screen()
-
-                break
 
 if __name__ == '__main__':
 

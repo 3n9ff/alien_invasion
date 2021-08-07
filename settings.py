@@ -19,6 +19,6 @@ class Settings:
         self.bullet_color = (192, 192, 192)
 
         #Alien speed
-        self.alien_speed = 2
+        self.alien_speed = 0.3
         self.alien_drop_down = 30
         self.alien_direction = -1
