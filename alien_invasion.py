@@ -16,7 +16,7 @@ from aliens import Alien
 
 from game_stats import Gamestats
 
-from buttons import Button, ScoreBoard
+from interface import Button, ScoreBoard
 
 class AlienInvasion:
     """Overall vlass to manage assets an behavior"""
@@ -298,7 +298,14 @@ class AlienInvasion:
 
         #Draw the puntuation
         puntuation = ScoreBoard(self, self.statistics.player_points)
-        puntuation._show_scoreboard((1200,20)) 
+        puntuation.txrect.centerx = puntuation.screen_rect.centerx
+        puntuation._show_scoreboard()
+
+        #Draw the round
+        round = ScoreBoard(self, self.statistics.round)
+        round.txrect.topright = puntuation.screen_rect.topright
+        round.txrect.x -= 40
+        round._show_scoreboard()
 
         #Draw the proper button
         if not self.active and not self.game_over:
