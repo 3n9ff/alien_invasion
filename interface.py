@@ -57,34 +57,4 @@ class ScoreBoard:
         self.x, self.y = self.txrect.x, self.txrect.y + 20
 
         #draw
-        self.screen.blit(self.text, (self.x, self.y))
-
-class LivesIndicator:
-    """Drae on the screen how many lives are left"""
-
-    def __init__(self,ai_game):
-        
-        self.ai_game = ai_game
-
-        #screen info
-        self.screen = ai_game.screen
-        self.screen_rect = self.screen.get_rect()
-
-        #image 
-        self.mum = pygame.image.load('imagenes/nave.png')
-        image = self.mum.convert()
-        self.image = pygame.transform.scale(image, (40, 34))
-        self.image_rect = self.image.get_rect()
-
-        #image position
-        self.image_width = self.image_rect.width
-        self.position_x = 0 + self.image_width * self.ai_game.statistic.ship_lives_left + 5
-
-    def draw_lives(self):
-        """Blit the lives"""
-
-        for live in self.ai_game.statistic.ship_lives_left:
-
-            self.screen.blit(self.image, (self.position_x, 20))
-
-            #Continuar x akii, en teoria ya esta
+        self.screen.blit(self.text, (self.x, self.y))   

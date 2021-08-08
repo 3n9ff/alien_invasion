@@ -1,3 +1,4 @@
+
 import sys
 
 import pygame
@@ -17,6 +18,8 @@ from aliens import Alien
 from game_stats import Gamestats
 
 from interface import Button, ScoreBoard
+
+from lives import LivesIndicator
 
 class AlienInvasion:
     """Overall vlass to manage assets an behavior"""
@@ -161,9 +164,9 @@ class AlienInvasion:
 
         if collider:
 
-            self._alien_shoted_down()
-
             self._rounds_track()
+
+            self._alien_shoted_down()
 
     def _alien_shoted_down(self):
         """What happend when an alien is shoted down"""
@@ -175,7 +178,7 @@ class AlienInvasion:
     def _rounds_track(self):
         """indicate when a round is passed and what happen"""
 
-        if len(self.aliens) == 1:
+        if len(self.aliens) == 0:
 
             self.statistics.round += 1
             self.statistics.player_points += self.settings.round_passed
@@ -265,7 +268,7 @@ class AlienInvasion:
         self.bullets.update()
         for bullet in self.bullets:
             #Eliminar las balas si salen de la pantalla
-            if bullet.rect.y == 0:
+            if bullet.rect.y <= 0:
                 self.bullets.remove(bullet)
         self._check_alien_bullet_col()
     
@@ -306,6 +309,10 @@ class AlienInvasion:
         round.txrect.topright = puntuation.screen_rect.topright
         round.txrect.x -= 40
         round._show_scoreboard()
+
+        #Draw lives
+        livess = LivesIndicator(self)
+        livess.draw_lives()
 
         #Draw the proper button
         if not self.active and not self.game_over:
