@@ -49,7 +49,7 @@ class ScoreBoard:
         self.rect = pygame.Rect(self.txrect)
         pygame.draw.rect(self.screen, (25, 25, 112), self.rect)
 
-    def _show_scoreboard(self,):
+    def _show_scoreboard(self):
         """Draw the scoreboard onto the screen, 
         change the self.txrect value to set the position"""
 

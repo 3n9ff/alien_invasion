@@ -192,7 +192,7 @@ class AlienInvasion:
             self.statistics.round += 1
             self.statistics.player_points += self.settings.round_passed
             
-            #increase speed and puntuation
+            #increase speed and self.puntuation
             self._increase_speed()
             self._increase_points()
     
@@ -337,14 +337,41 @@ class AlienInvasion:
             #add
             self.lives.add(simb)
 
+    def _set_punctuation_board(self):
+        
+        self.number_point = int(self.statistics.player_points)
+        self.score = "{:,}".format(self.number_point)
+
+        self.puntuation = ScoreBoard(self, self.score, 50)
+        self.puntuation.txrect.centerx = self.puntuation.screen_rect.centerx
+        self.puntuation.txrect.y -= 5
+
+        self.puntuation._show_scoreboard()
+
+    def _check_highscore(self):
+
+        if int(self.number_point) >= int(self.high_score):
+            self.high_scor = ScoreBoard(self, self.score, 30)
+        else:
+            self.high_scor = ScoreBoard(self, self.highscore, 30)
+
+    def _set_highscore(self):
+        
+        self.highscore = "{:,}".format(int(self.high_score))
+        
+        self._check_highscore()
+        
+        self.high_scor.txrect.centerx = self.high_scor.screen_rect.centerx
+        self.high_scor.txrect.y += self.puntuation.txrect.height
+
+        self.high_scor._show_scoreboard()
+
+
     def _update_screen(self):
         """ Update the screen all the time"""
 
         #Display background color
         self.screen.fill(self.bg_colors)
-
-        #Draw lives
-        self.lives.draw(self.screen)
 
         #Draw the ship
         self.ship.blitime()
@@ -358,37 +385,22 @@ class AlienInvasion:
 
         #Highscore
         with open("high_score.json") as high_score:
-            self.high_score = str(json.load(high_score))
+            self.high_score = json.load(high_score)
 
-
-        #Draw the puntuation
-        number_point = int(self.statistics.player_points)
-        self.score = "{:,}".format(number_point)
-        puntuation = ScoreBoard(self, self.score, 50)
-        puntuation.txrect.centerx = puntuation.screen_rect.centerx
-        puntuation.txrect.y -= 5
-        puntuation._show_scoreboard()
+        #Draw the self.puntuation
+        self._set_punctuation_board()
 
         #Drae high self.score
+        self._set_highscore()
 
-        highscore = "{:,}".format(int(self.high_score))
-        high_score = ScoreBoard(self, highscore, 30)
-        
-        if int(self.score) >= int(self.high_score):
-            high_score = ScoreBoard(self, self.score, 30)
-
-        high_score.txrect.centerx = high_score.screen_rect.centerx
-        high_score.txrect.y += puntuation.txrect.height
-
-        high_score._show_scoreboard()
+        #Draw lives
+        self.lives.draw(self.screen)
 
         #Draw the round
         round = ScoreBoard(self, self.statistics.round, 50)
-        round.txrect.topright = puntuation.screen_rect.topright
+        round.txrect.topright = self.puntuation.screen_rect.topright
         round.txrect.x -= 40
         round._show_scoreboard()
-
-
 
         #Upadate high_score
         self._update_highdcore()
@@ -413,19 +425,16 @@ class AlienInvasion:
 
             pygame.mouse.set_visible(True)
 
-
-
         #Make the most recently draw screen visible
         pygame.display.flip()
 
     def _update_highdcore(self):
 
-        if (int(self.score) >= int(self.high_score)) and self.game_over == True:
+        if (int(self.number_point) >= int(self.high_score)) and self.game_over == True:
 
             with open("high_score.json", "w") as j:
-                json.dump(self.score, j)
+                json.dump(self.number_point, j)
                 
-
     def run_game(self):
         """start the main loop for the game"""
         

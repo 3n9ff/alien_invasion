@@ -32,8 +32,8 @@ class Settings:
 
         #dynamics
 
-        self.alien_reached = 5
+        self.alien_reached = 10
         self.round_passed = 200       
-        self.alien_speed = 0.5 * 10
+        self.alien_speed = 0.5 
 
         
