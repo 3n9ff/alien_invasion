@@ -1,9 +1,10 @@
-
 import sys
 
 import pygame
 
 import time
+
+import json
 
 from pygame.constants import FULLSCREEN
 
@@ -17,9 +18,8 @@ from aliens import Alien
 
 from game_stats import Gamestats
 
-from interface import Button, ScoreBoard
+from interface import Button, ScoreBoard, LivesIndicator
 
-from lives import LivesIndicator
 
 class AlienInvasion:
     """Overall vlass to manage assets an behavior"""
@@ -31,7 +31,7 @@ class AlienInvasion:
         self.settings = Settings()
 
         #Crear ventama
-        self.screen = pygame.display.set_mode((0,0), FULLSCREEN)
+        self.screen = pygame.display.set_mode((1366, 768), FULLSCREEN)
         pygame.display.set_caption("Alien Invasion")
 
         self.screen_rect = self.screen.get_rect()
@@ -46,12 +46,16 @@ class AlienInvasion:
         #set the statistics of the game
         self.statistics = Gamestats(self.settings)
 
+        #lives indicator  
+        self.lives = pygame.sprite.Group()
+        self._add_lives()
+
         #Call characters class
         self.ship = Ship(self)       
 
         #Buttons
         self.start_button = Button(self, "  PLAY  ", 125) 
-        self.restar_button = Button(self," GAME OVER, CLICK TO RESTAR", 75)
+        self.restar_button = Button(self," GAME OVER, CLICK TO RESTART", 75)
 
         #Make a group that manage all bullets
         self.bullets = pygame.sprite.Group()
@@ -59,12 +63,11 @@ class AlienInvasion:
         #Make a group that manage all aliens and set them
         self.aliens = pygame.sprite.Group()
         self._create_fleet()
-
+            
         #Loop flag
         self.active = False
-        self.game_over = False
+        self.game_over = False   
         
-
     def _check_events(self):
         """ Respond to keypress and mouse events"""
 
@@ -120,6 +123,12 @@ class AlienInvasion:
 
             self.game_over = False  
 
+            #Restart the statistics
+            self.statistics.reset_stats()
+
+            #reset lives indicator
+            self._add_lives()
+ 
     def _create_alien(self, line, alien_number):
         """Create an alien"""
         alien = Alien( self )
@@ -182,6 +191,22 @@ class AlienInvasion:
 
             self.statistics.round += 1
             self.statistics.player_points += self.settings.round_passed
+            
+            #increase speed and puntuation
+            self._increase_speed()
+            self._increase_points()
+    
+    def _increase_speed(self):
+        """Increase the speed of the game"""
+
+        self.settings.bullet_speed *= self.settings.speed_increase
+        self.settings.alien_speed *= self.settings.speed_increase
+    
+    def _increase_points(self):
+        """Increase how many points you get"""
+
+        self.settings.alien_reached  *= 1.25
+        self.settings.round_passed *= 1.25
 
     def _check_ship_alien_colliders(self):
         """ Check ship-alien collisions"""
@@ -191,6 +216,10 @@ class AlienInvasion:
         if ship_alien_colider:
 
             self._ship_hit()
+
+            #Delete lives
+            self.lives.empty()
+            self._add_lives()
     
     def _check_alien_reach_bottom(self):
         """Check if an alien reach the bottom"""
@@ -232,9 +261,19 @@ class AlienInvasion:
                 #show game over
                 self.game_over = True
 
-                #Restart the statistics
-                self.statistics.reset_stats()
- 
+                #reset game speed
+                self._reset_speedpoints()
+
+    def _reset_speedpoints(self):
+        """reset the normal speed and punctuation"""
+
+        #Normal punctuation
+        self.settings.alien_reached = self.settings.alien_reached_o
+        self.settings.round_passed = self.settings.round_passed_o
+
+        #Normal speed
+        self.settings.alien_speed = self.settings.alien_speed_o
+
     def _check_fleet_direction(self):
         """Check if any alien has reached the edge"""
         for alien in self.aliens:
@@ -283,11 +322,29 @@ class AlienInvasion:
             #Create another fleet
             self._create_fleet()
 
+    def _add_lives(self):
+        """Blit the lives"""
+
+        for live in range(self.statistics.ship_lives_left):
+            
+            #Create the live
+            simb = LivesIndicator(self)
+
+            #set position
+            simb.rect.x = (simb.image_width + 5) * live + 40
+            simb.rect.y = 10
+
+            #add
+            self.lives.add(simb)
+
     def _update_screen(self):
         """ Update the screen all the time"""
 
         #Display background color
         self.screen.fill(self.bg_colors)
+
+        #Draw lives
+        self.lives.draw(self.screen)
 
         #Draw the ship
         self.ship.blitime()
@@ -299,21 +356,43 @@ class AlienInvasion:
         #Draw the aliens
         self.aliens.draw(self.screen)
 
+        #Highscore
+        with open("high_score.json") as high_score:
+            self.high_score = str(json.load(high_score))
+
+
         #Draw the puntuation
-        puntuation = ScoreBoard(self, self.statistics.player_points)
+        number_point = int(self.statistics.player_points)
+        self.score = "{:,}".format(number_point)
+        puntuation = ScoreBoard(self, self.score, 50)
         puntuation.txrect.centerx = puntuation.screen_rect.centerx
+        puntuation.txrect.y -= 5
         puntuation._show_scoreboard()
 
+        #Drae high self.score
+
+        highscore = "{:,}".format(int(self.high_score))
+        high_score = ScoreBoard(self, highscore, 30)
+        
+        if int(self.score) >= int(self.high_score):
+            high_score = ScoreBoard(self, self.score, 30)
+
+        high_score.txrect.centerx = high_score.screen_rect.centerx
+        high_score.txrect.y += puntuation.txrect.height
+
+        high_score._show_scoreboard()
+
         #Draw the round
-        round = ScoreBoard(self, self.statistics.round)
+        round = ScoreBoard(self, self.statistics.round, 50)
         round.txrect.topright = puntuation.screen_rect.topright
         round.txrect.x -= 40
         round._show_scoreboard()
 
-        #Draw lives
-        livess = LivesIndicator(self)
-        livess.draw_lives()
 
+
+        #Upadate high_score
+        self._update_highdcore()
+        
         #Draw the proper button
         if not self.active and not self.game_over:
 
@@ -334,8 +413,18 @@ class AlienInvasion:
 
             pygame.mouse.set_visible(True)
 
+
+
         #Make the most recently draw screen visible
         pygame.display.flip()
+
+    def _update_highdcore(self):
+
+        if (int(self.score) >= int(self.high_score)) and self.game_over == True:
+
+            with open("high_score.json", "w") as j:
+                json.dump(self.score, j)
+                
 
     def run_game(self):
         """start the main loop for the game"""
@@ -369,3 +458,6 @@ if __name__ == '__main__':
     #make a game instance and run the game
     ai = AlienInvasion()
     ai.run_game()
+
+
+#3n9ff =-)
